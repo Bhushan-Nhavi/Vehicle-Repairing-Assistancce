@@ -1,0 +1,173 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{% static 'style2.css' %}">
+    <title>Mechanic_request</title>
+</head>
+<body>
+  {% if requests_list.0.vehicle is not none %}
+     {%  if target_user == mechanicName %}
+           
+                        <div class="global-container">
+                            <div class="card login-form">
+                            <div class="card-body">
+                              <h3 class="card-title text-left">Customer Information</h3><hr>
+                              <div class="card-text">
+                                <!--
+                              <div class="alert alert-danger alert-dismissible fade show" role="alert">Incorrect username or password.</div> -->      
+                                <form id="f1" method="post">
+                                    {% csrf_token %}
+                                  {% for request_item in requests_list %}
+                                  <!-- to error: add class "has-danger" -->
+                                  <div class="form-group">
+                                    <label for="exampleInputEmail1">vehicle</label>
+                                    <h6>{{ request_item.vehicle }}</h6>
+                                  </div>
+                                  <div class="form-group">
+                                    <label for="exampleInputPassword1">brand</label>
+                                    <h6>{{ request_item.brand }}</h6>
+                                  </div>
+                                  <div class="form-group">
+                                    <label for="exampleInputPassword1">car Number</label>
+                                    <h6>{{ request_item.number }}</h6>
+                                  </div>
+                                  <div class="form-group">
+                                    <label for="exampleInputPassword1">selected_problem</label>
+                                    <h6>{{ request_item.selected_problem }}</h6>
+                                  </div>
+                                  <div class="form-group">
+                                    <label for="exampleInputPassword1">location</label>
+                                    <h6>{{ request_item.location }}</h6>
+                                  </div>
+
+
+                                  <!-- <div class="form-group">
+                                    <label for="exampleInputPassword1">mechanicName</label>
+                                    <h6>{{ request_item.mechanicName }}</h6>
+                                  </div>
+
+
+                                  <div class="form-group">
+                                    <label for="exampleInputPassword1">target_user</label>
+                                    <h6>{{ request_item.target_user }}</h6>
+                                  </div> -->
+                                  {% endfor %}
+                                  <div class="form-group">
+                                    <label for="exampleInputPassword1">Amount</label><br>
+                                    <input type="number" id="amo" name="cost" required>
+                                  </div>
+                                  <div class="content">
+                                  <button type="button" onclick="abc(this)"name="action_button" class="btn btn-outline-primary" value='Get Job'>Get Job</button>       
+                                  <button type="button" name="action_button" onclick="status()" id="Cancel" class="btn btn-outline-danger " value='Cancel Job' style="margin-left:15px ;">Cancel Job</button>
+                                  <br><span  id="timer" ></span> <br><br>
+                                  <div id="messageContainer"></div>
+                                  <div id="linkContainer"></div>
+                                </div>
+                                </form>
+
+                            
+                              </div>
+                            </div>
+                          </div>
+                          </div>
+                <div id="messageContainer"></div>
+                <div id="linkContainer"></div>
+                  
+          {% else %}
+          <div class="global-container">
+            <div class="card ">
+              <b><h1 class="card-title text-center">There is no request for you</h1><br></b><br>
+              <center><button class="btn btn-outline-primary btn-sm" style="width: 90px; margin-bottom: 20px;" onclick="window.history.back()">Go Back</button></center> 
+          </div>
+          
+        </div>
+            {% endif %}
+        {% else %}
+        <div class="global-container">
+          <div class="card ">
+            <b><h1 class="card-title text-center">There is no request for you</h1><br></b><br>
+            <center><button class="btn btn-outline-primary btn-sm" style="width: 90px; margin-bottom: 20px;" onclick="window.history.back()">Go Back</button></center> 
+        </div>
+        
+      </div>
+      {% endif %}
+
+      
+</body>
+<script>
+    function abc(clickedButton) {
+
+        clickedButton.disabled='true';
+
+        var twoMinutes = 25,
+        display = document.getElementById('timer');
+        amo = document.getElementById('amo').value;
+        sendRequest();
+        startTimer(twoMinutes, display);
+
+
+        function startTimer(duration, display){
+
+        var timer = duration, minutes, seconds;
+
+        var intervalId= setInterval(function () {
+          
+            minutes = parseInt(timer / 60, 10);
+            seconds = parseInt(timer % 60, 10);
+
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+                
+
+            if (--timer < 0) {
+                display.textContent='over'
+                messageContainer.innerHTML= 'Check the Your service is Booked or not ';
+                var linkContainer = document.getElementById('linkContainer');
+                var aTag = document.createElement('a');
+                aTag.setAttribute('href', '/isBook/'); 
+                aTag.textContent = 'Click here'; 
+                linkContainer.appendChild(aTag);
+                clearInterval(intervalId);
+           
+            }else
+            {
+                
+                display.textContent = minutes + ":" + seconds;
+            }
+        }, 1000);
+          }
+          
+
+   
+ 
+}
+var stat=false;
+function status(){
+  stat=true;
+  sendRequest()
+}
+function sendRequest() {
+            console.log('Inside send Request Method ',amo);
+              var xhr = new XMLHttpRequest();
+              xhr.open('POST', '{% url "Mechanic_request" %}', true);
+              xhr.setRequestHeader('Content-Type', 'application/json');
+              var Cancel=document.getElementById('Cancel').value;
+              console.log(Cancel);
+              console.log(stat);
+              var data={
+                'Amount':amo,
+                'cancel_btn':stat
+              }
+              xhr.send(JSON.stringify(data));
+
+}
+
+
+</script>
+</html>

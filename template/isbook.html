@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .global-container{
+            height:100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #00f8c6;
+            margin-top: 165px;
+            padding: 10px;
+        }
+
+        
+        .card{
+            padding: 40px;
+            font-family: 'Times New Roman', Times, serif;
+            
+        }
+    </style>
+</head>
+<body bgcolor="cyan">
+    <div class="global-container" >
+        <div class="card ">
+        {% if btn_clicked == False %}
+          <b><h1 class="card-title text-center">OOPss! Your Ride is cancelled</h1><br></b>
+        {% else %} 
+          <b><h1 class="card-title text-center">Your Ride is Booked</h1><br></b>
+        {% endif %}
+      </div>
+  </div>
+  
+    
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <title> Table </title>
+    <style>
+        .global-container {
+            padding: 10px;
+          margin-top: 115px;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background-color: #f5f5f5;
+          /* width: 80%; */
+          
+        }
+
+    </style>
+</head>
+<body >
+    <form  id="myForm" method="post">
+    <center>
+        <div class="global-container">
+        {% if mec|length < 1 %}
+            <p>There is no Mechanic</p>
+        {% else %}
+        <table  class="table  table-dark table-hover"  id="mechanicTable">
+                <thead>
+                <tr>
+                    <th scope="col">sr no</th>
+                    <th scope="col">Maechanic Name</th>
+                    <th scope="col">Address</th>
+                    <th scope="col">City</th>
+                    <th scope="col">Phone Number</th>
+                    <th scope="col">Approach</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr> <div> </td>
+                    {% for m in mec  %}
+                    
+                        <td  >{{forloop.counter}}</td>
+                        <td>{{m.User_name}}</td>
+                        <td>{{m.address}}</td>
+                        <td>{{m.city}}</td>
+                        <td>{{m.phone_number}}</td>
+                        <td>
+                            <button  id="cell{{ forloop.counter }}"   type="button" onclick="abc(this)" name='btn' class="btn btn-outline-primary">Assign</button>
+                            <span id="timer"></span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+        {% endif %}
+          
+                </tbody>
+            </table><br>
+            </center> 
+        </div>
+        <div id="messageContainer"></div>
+        <div id="linkContainer"></div>
+    </form>
+   </body>
+   <script>
+     
+    function abc(clickedButton) {
+
+        var assignButtons = document.getElementsByName('btn');
+        for (var i = 0; i < assignButtons.length; i++) {
+            assignButtons[i].disabled=true
+            }
+
+        var twoMinutes = 20,
+        display = document.getElementById('timer');
+
+        sendRequest();
+        startTimer(twoMinutes, display);
+
+
+function startTimer(duration, display){
+
+    var timer = duration, minutes, seconds;
+        
+        var intervalId= setInterval(function () {
+           
+            minutes = parseInt(timer / 60, 10);
+            seconds = parseInt(timer % 60, 10);
+    
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+                
+    
+            if (--timer < 0) {
+                display.textContent='over'
+                var messageContainer = document.getElementById('messageContainer');
+                messageContainer.innerHTML= 'Check the order Section';
+                var linkContainer = document.getElementById('linkContainer');
+                var aTag = document.createElement('a');
+                aTag.setAttribute('href', '/order/'); 
+                aTag.textContent = 'Click here'; 
+                linkContainer.appendChild(aTag);
+                clearInterval(intervalId);
+
+                
+            }else
+            {  
+                display.textContent = minutes + ":" + seconds;
+            }
+        }, 1000);
+}
+
+
+function sendRequest() {
+     var xhr = new XMLHttpRequest();
+    xhr.open('POST', '{% url "intent" %}', true);
+    xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}"); 
+    xhr.setRequestHeader('Content-Type', 'application/json');
+
+
+    var parentRow = clickedButton.parentNode.parentNode;
+    var cells = parentRow.querySelectorAll('td');
+
+if (cells.length >= 0) {
+   
+    var mechanicName = cells[1].textContent;
+    var address = cells[2].textContent;
+    var city = cells[3].textContent;
+    var phoneNumber = cells[4].textContent;
+    var data = {
+        "mechanicName":mechanicName,
+        "address":address,
+        "city": city,
+        "phoneNumber": phoneNumber
+    };
+    
+    xhr.send(JSON.stringify(data));
+} else {
+    console.error("Not enough cells in the row.");
+}
+ 
+}
+
+}
+
+</script>
+
+   </script>
+
+   </html>

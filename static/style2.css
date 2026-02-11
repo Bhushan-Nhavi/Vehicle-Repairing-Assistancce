@@ -1,0 +1,52 @@
+.global-container{
+height:100%;
+display: flex;
+align-items: center;
+justify-content: center;
+background-color: #f5f5f5;
+margin-top: 50px;
+}
+
+
+.card-title{ font-weight:500; margin-top: 10px; }
+
+
+label{
+    margin-bottom: 6px;
+    font-size: 17px;
+}
+.content{
+font-size: 14px;
+margin-left: 100px;
+}
+.else-statement{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+input{
+    width: 150px;
+}
+
+.form-group{
+    margin: 30px;
+}
+.login-form{ 
+width:450px;   /*form  Width*/
+margin:20px;
+}
+h6{
+    font-weight: 300;
+}
+.sign-up{
+text-align:center;
+padding:20px 0 0;
+}
+
+.alert{
+margin-bottom:-30px;
+font-size: 13px;
+margin-top:20px;
+}
